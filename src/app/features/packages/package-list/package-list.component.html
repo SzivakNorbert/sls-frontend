@@ -1,0 +1,125 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <div class="flex-between mb-3">
+                            <h1>Csomagok</h1>
+                            @if (isAdmin()) {
+                            <div class="flex-gap">
+                                   <a routerLink="/packages/create" class="btn btn-primary">Új Csomag</a>
+                                   <a routerLink="/packages/assign" class="btn btn-success">Futár Hozzárendelés</a>
+                            </div>
+                            }
+                     </div>
+
+                     @if (error()) {
+                     <div class="alert alert-error">
+                            {{ error() }}
+                     </div>
+                     }
+
+                     <!-- Filters -->
+                     <div class="card mb-3">
+                            <div class="grid grid-3">
+                                   <div class="form-group">
+                                          <label class="form-label">Keresés</label>
+                                          <input type="text" class="form-control"
+                                                 placeholder="Tracking szám, címzett, város..." [value]="searchTerm()"
+                                                 (input)="onSearchChange($any($event.target).value)">
+                                   </div>
+                                   <div class="form-group">
+                                          <label class="form-label">Státusz</label>
+                                          <select class="form-control" [value]="statusFilter()"
+                                                 (change)="onStatusFilterChange($any($event.target).value)">
+                                                 @for (status of statusOptions; track status) {
+                                                 <option [value]="status">
+                                                        {{ status === 'ALL' ? 'Összes' : status }}
+                                                 </option>
+                                                 }
+                                          </select>
+                                   </div>
+                                   <div class="form-group">
+                                          <label class="form-label">Prioritás</label>
+                                          <select class="form-control" [value]="priorityFilter()"
+                                                 (change)="onPriorityFilterChange($any($event.target).value)">
+                                                 @for (priority of priorityOptions; track priority) {
+                                                 <option [value]="priority">
+                                                        {{ priority === 'ALL' ? 'Összes' : priority }}
+                                                 </option>
+                                                 }
+                                          </select>
+                                   </div>
+                            </div>
+                     </div>
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Csomagok betöltése..."></app-loading-spinner>
+                     } @else {
+                     <div class="card">
+                            @if (filteredPackages().length === 0) {
+                            <p class="text-center text-muted p-3">Nincs megjeleníthető csomag</p>
+                            } @else {
+                            <div class="table-responsive">
+                                   <table class="table">
+                                          <thead>
+                                                 <tr>
+                                                        <th>Tracking Szám</th>
+                                                        <th>Címzett</th>
+                                                        <th>Cím</th>
+                                                        <th>Súly (kg)</th>
+                                                        <th>Prioritás</th>
+                                                        <th>Státusz</th>
+                                                        <th>Futár</th>
+                                                        <th>Műveletek</th>
+                                                 </tr>
+                                          </thead>
+                                          <tbody>
+                                                 @for (pkg of filteredPackages(); track pkg.id) {
+                                                 <tr>
+                                                        <td><strong>{{ pkg.trackingNumber }}</strong></td>
+                                                        <td>{{ pkg.receiverName }}</td>
+                                                        <td>{{ pkg.city }}, {{ pkg.address }}</td>
+                                                        <td>{{ pkg.weightKg }}</td>
+                                                        <td>
+                                                               <app-status-badge [status]="pkg.priority"
+                                                                      type="priority">
+                                                               </app-status-badge>
+                                                        </td>
+                                                        <td>
+                                                               <app-status-badge
+                                                                      [status]="pkg.status"></app-status-badge>
+                                                        </td>
+                                                        <td>
+                                                               @if (pkg.courierName) {
+                                                               <span>{{ pkg.courierName }}</span>
+                                                               @if (pkg.courierPhone) {
+                                                               <br><small class="text-muted">{{ pkg.courierPhone
+                                                                      }}</small>
+                                                               }
+                                                               } @else {
+                                                               <span class="text-muted">-</span>
+                                                               }
+                                                        </td>
+                                                        <td>
+                                                               <a [routerLink]="['/packages', pkg.id]"
+                                                                      class="btn btn-sm btn-primary">
+                                                                      Részletek
+                                                               </a>
+                                                        </td>
+                                                 </tr>
+                                                 }
+                                          </tbody>
+                                   </table>
+                            </div>
+                            <div class="table-footer">
+                                   Összesen: {{ filteredPackages().length }} csomag
+                            </div>
+                            }
+                     </div>
+                     }
+              </div>
+       </div>
+</div>

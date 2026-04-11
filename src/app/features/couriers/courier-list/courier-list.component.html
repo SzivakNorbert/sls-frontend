@@ -1,0 +1,81 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <div class="flex-between mb-3">
+                            <h1>Futárok</h1>
+                            <a routerLink="/couriers/create" class="btn btn-primary">Új Futár</a>
+                     </div>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Futárok betöltése..."></app-loading-spinner>
+                     } @else {
+                     <div class="card">
+                            @if (couriers().length === 0) {
+                            <p class="text-center text-muted p-3">Nincs futár a rendszerben</p>
+                            } @else {
+                            <table class="table">
+                                   <thead>
+                                          <tr>
+                                                 <th>Név</th>
+                                                 <th>Email</th>
+                                                 <th>Jármű</th>
+                                                 <th>Rendszám</th>
+                                                 <th>Telefon</th>
+                                                 <th>Max. Súly</th>
+                                                 <th>Aktív Kézb.</th>
+                                                 <th>Össz. Kézb.</th>
+                                                 <th>Státusz</th>
+                                                 <th>Műveletek</th>
+                                          </tr>
+                                   </thead>
+                                   <tbody>
+                                          @for (courier of couriers(); track courier.id) {
+                                          <tr>
+                                                 <td><strong>{{ courier.name }}</strong></td>
+                                                 <td>{{ courier.email }}</td>
+                                                 <td>{{ courier.vehicleType }}</td>
+                                                 <td>{{ courier.licensePlate || '-' }}</td>
+                                                 <td>{{ courier.phone || '-' }}</td>
+                                                 <td>{{ courier.maxWeightKg || '-' }} kg</td>
+                                                 <td>
+                                                        <span
+                                                               [class]="courier.activeDeliveries > 0 ? 'badge badge-in-transit' : 'badge badge-normal'">
+                                                               {{ courier.activeDeliveries }}
+                                                        </span>
+                                                 </td>
+                                                 <td>
+                                                        <span class="badge badge-delivered">
+                                                               {{ courier.totalDelivered }}
+                                                        </span>
+                                                 </td>
+                                                 <td>
+                                                        @if (courier.isActive) {
+                                                        <span class="badge badge-delivered">Aktív</span>
+                                                        } @else {
+                                                        <span class="badge badge-failed">Inaktív</span>
+                                                        }
+                                                 </td>
+                                                 <td>
+                                                        <a [routerLink]="['/couriers', courier.id]"
+                                                               class="btn btn-sm btn-primary">
+                                                               Részletek
+                                                        </a>
+                                                 </td>
+                                          </tr>
+                                          }
+                                   </tbody>
+                            </table>
+                            }
+                     </div>
+                     }
+              </div>
+       </div>
+</div>

@@ -1,0 +1,44 @@
+.layout {
+       display: flex;
+       min-height: 100vh;
+}
+
+.main-content {
+       flex: 1;
+       background-color: #f5f5f5;
+}
+
+.stat-card {
+       text-align: center;
+       padding: 30px 20px;
+}
+
+.stat-label {
+       font-size: 14px;
+       color: #6c757d;
+       margin-bottom: 10px;
+       font-weight: 500;
+}
+
+.stat-value {
+       font-size: 32px;
+       font-weight: 700;
+       color: #333;
+}
+
+.stat-value.text-primary {
+       color: #007bff;
+}
+
+.stat-value.text-success {
+       color: #28a745;
+}
+
+.stat-value.text-danger {
+       color: #dc3545;
+}
+
+.quick-actions h3 {
+       font-size: 18px;
+       margin-bottom: 10px;
+}

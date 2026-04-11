@@ -1,0 +1,141 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Saját Kézbesítéseim</h1>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Kézbesítések betöltése..."></app-loading-spinner>
+                     } @else {
+                     <div class="card mt-3">
+                            @if (deliveries().length === 0) {
+                            <p class="text-center text-muted p-3">Nincs hozzád rendelt kézbesítés</p>
+                            } @else {
+                            <table class="table">
+                                   <thead>
+                                          <tr>
+                                                 <th>Tracking Szám</th>
+                                                 <th>Címzett</th>
+                                                 <th>Cím</th>
+                                                 <th>Státusz</th>
+                                                 <th>Hozzárendelve</th>
+                                                 <th>Megjegyzés</th>
+                                                 <th>Műveletek</th>
+                                          </tr>
+                                   </thead>
+                                   <tbody>
+                                          @for (delivery of deliveries(); track delivery.id) {
+                                          <tr>
+                                                 <td><strong>{{ delivery.trackingNumber }}</strong></td>
+                                                 <td>{{ delivery.receiverName }}</td>
+                                                 <td>{{ delivery.city }}, {{ delivery.address }}</td>
+                                                 <td>
+                                                        <app-status-badge [status]="delivery.status"
+                                                               type="delivery"></app-status-badge>
+                                                 </td>
+                                                 <td>{{ delivery.assignedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+                                                 <td>{{ delivery.deliveryNotes || '-' }}</td>
+                                                 <td>
+                                                        @if (delivery.status !== 'DELIVERED' && delivery.status !==
+                                                        'FAILED') {
+                                                        <button class="btn btn-sm btn-success mr-1"
+                                                               (click)="openUpdateModal(delivery)">
+                                                               Státusz Frissítés
+                                                        </button>
+                                                        }
+                                                        <a [routerLink]="['/packages', delivery.packageId]"
+                                                               class="btn btn-sm btn-primary">
+                                                               Csomag
+                                                        </a>
+                                                 </td>
+                                          </tr>
+                                          }
+                                   </tbody>
+                            </table>
+                            }
+                     </div>
+                     }
+              </div>
+       </div>
+</div>
+
+<!-- Update Status Modal -->
+@if (selectedDelivery()) {
+<div class="modal-overlay" (click)="closeUpdateModal()">
+       <div class="modal-content" (click)="$event.stopPropagation()">
+              <div class="modal-header">
+                     <h3>Kézbesítés Státusz Frissítése</h3>
+                     <button class="modal-close" (click)="closeUpdateModal()">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                     <p><strong>Tracking:</strong> {{ selectedDelivery()!.trackingNumber }}</p>
+                     <p><strong>Címzett:</strong> {{ selectedDelivery()!.receiverName }}</p>
+                     <p class="mb-3"><strong>Jelenlegi státusz:</strong>
+                            <app-status-badge [status]="selectedDelivery()!.status" type="delivery"></app-status-badge>
+                     </p>
+
+                     @if (updateSuccess()) {
+                     <div class="alert alert-success">
+                            Státusz sikeresen frissítve!
+                     </div>
+                     }
+
+                     <form [formGroup]="updateForm" (ngSubmit)="submitUpdate()">
+                            <div class="form-group">
+                                   <label class="form-label">Új Státusz *</label>
+                                   <select class="form-control" formControlName="newStatus">
+                                          @for (status of getAvailableStatuses(selectedDelivery()!.status); track
+                                          status) {
+                                          <option [value]="status">{{ status }}</option>
+                                          }
+                                   </select>
+                                   <p class="text-small text-muted mt-1">
+                                          Érvényes átmenetek: ASSIGNED → IN_TRANSIT → DELIVERED/FAILED
+                                   </p>
+                            </div>
+
+                            <div class="form-group">
+                                   <label class="form-label">
+                                          Megjegyzés
+                                          @if (updateForm.get('newStatus')?.value === 'FAILED') {
+                                          <span class="text-danger">*</span>
+                                          }
+                                   </label>
+                                   <textarea class="form-control" formControlName="deliveryNotes"
+                                          [class.error]="updateForm.get('deliveryNotes')?.invalid && updateForm.get('deliveryNotes')?.touched"
+                                          rows="3"
+                                          placeholder="Opcionális megjegyzés (FAILED státusznál kötelező)"></textarea>
+                                   @if (updateForm.get('deliveryNotes')?.invalid &&
+                                   updateForm.get('deliveryNotes')?.touched) {
+                                   <div class="form-error">
+                                          FAILED státusz esetén kötelező megjegyzést írni
+                                   </div>
+                                   }
+                            </div>
+
+                            <div class="flex-gap mt-3">
+                                   <button type="submit" class="btn btn-primary"
+                                          [disabled]="updateForm.invalid || updating() || updateSuccess()">
+                                          @if (updating()) {
+                                          <span class="spinner mr-1"></span>
+                                          }
+                                          Frissítés
+                                   </button>
+                                   <button type="button" class="btn btn-secondary" (click)="closeUpdateModal()"
+                                          [disabled]="updating()">
+                                          Mégse
+                                   </button>
+                            </div>
+                     </form>
+              </div>
+       </div>
+</div>
+}

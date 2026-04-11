@@ -1,0 +1,68 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Összes Kézbesítés</h1>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Kézbesítések betöltése..."></app-loading-spinner>
+                     } @else {
+                     <div class="card mt-3">
+                            @if (deliveries().length === 0) {
+                            <p class="text-center text-muted p-3">Nincs kézbesítés</p>
+                            } @else {
+                            <table class="table">
+                                   <thead>
+                                          <tr>
+                                                 <th>Tracking Szám</th>
+                                                 <th>Címzett</th>
+                                                 <th>Cím</th>
+                                                 <th>Futár</th>
+                                                 <th>Státusz</th>
+                                                 <th>Hozzárendelve</th>
+                                                 <th>Kézbesítve</th>
+                                                 <th>Műveletek</th>
+                                          </tr>
+                                   </thead>
+                                   <tbody>
+                                          @for (delivery of deliveries(); track delivery.id) {
+                                          <tr>
+                                                 <td><strong>{{ delivery.trackingNumber }}</strong></td>
+                                                 <td>{{ delivery.receiverName }}</td>
+                                                 <td>{{ delivery.city }}, {{ delivery.address }}</td>
+                                                 <td>{{ delivery.courierName }}</td>
+                                                 <td>
+                                                        <app-status-badge [status]="delivery.status"
+                                                               type="delivery"></app-status-badge>
+                                                 </td>
+                                                 <td>{{ delivery.assignedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+                                                 <td>
+                                                        @if (delivery.deliveredAt) {
+                                                        {{ delivery.deliveredAt | date:'yyyy-MM-dd HH:mm' }}
+                                                        } @else {
+                                                        <span class="text-muted">-</span>
+                                                        }
+                                                 </td>
+                                                 <td>
+                                                        <a [routerLink]="['/deliveries', delivery.id]"
+                                                               class="btn btn-sm btn-primary">
+                                                               Részletek
+                                                        </a>
+                                                 </td>
+                                          </tr>
+                                          }
+                                   </tbody>
+                            </table>
+                            }
+                     </div>
+                     }
+              </div>
+       </div>
+</div>

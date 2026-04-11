@@ -1,0 +1,134 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <div class="flex-between mb-3">
+                            <h1>Csomag Részletei</h1>
+                            <button class="btn btn-secondary" (click)="goBack()">Vissza</button>
+                     </div>
+
+                     @if (error()) {
+                     <div class="alert alert-error">
+                            {{ error() }}
+                     </div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Csomag betöltése..."></app-loading-spinner>
+                     } @else if (package()) {
+                     <div class="grid grid-2">
+                            <!-- Basic Info -->
+                            <div class="card">
+                                   <div class="card-header">Alapadatok</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Tracking Szám:</span>
+                                                 <span class="detail-value"><strong>{{ package()!.trackingNumber
+                                                               }}</strong></span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Státusz:</span>
+                                                 <span class="detail-value">
+                                                        <app-status-badge
+                                                               [status]="package()!.status"></app-status-badge>
+                                                 </span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Prioritás:</span>
+                                                 <span class="detail-value">
+                                                        <app-status-badge [status]="package()!.priority"
+                                                               type="priority">
+                                                        </app-status-badge>
+                                                 </span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Súly:</span>
+                                                 <span class="detail-value">{{ package()!.weightKg }} kg</span>
+                                          </div>
+                                          @if (package()!.dimensions) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Méretek:</span>
+                                                 <span class="detail-value">{{ package()!.dimensions }}</span>
+                                          </div>
+                                          }
+                                   </div>
+                            </div>
+
+                            <!-- Sender & Receiver -->
+                            <div class="card">
+                                   <div class="card-header">Feladó és Címzett</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Feladó:</span>
+                                                 <span class="detail-value">{{ package()!.senderName }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Címzett:</span>
+                                                 <span class="detail-value">{{ package()!.receiverName }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Cím:</span>
+                                                 <span class="detail-value">{{ package()!.address }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Város:</span>
+                                                 <span class="detail-value">{{ package()!.city }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Irányítószám:</span>
+                                                 <span class="detail-value">{{ package()!.postalCode }}</span>
+                                          </div>
+                                   </div>
+                            </div>
+
+                            <!-- Courier Info -->
+                            @if (package()!.courierName) {
+                            <div class="card">
+                                   <div class="card-header">Futár Információk</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Futár neve:</span>
+                                                 <span class="detail-value">{{ package()!.courierName }}</span>
+                                          </div>
+                                          @if (package()!.courierPhone) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Telefonszám:</span>
+                                                 <span class="detail-value">{{ package()!.courierPhone }}</span>
+                                          </div>
+                                          }
+                                   </div>
+                            </div>
+                            }
+
+                            <!-- Timestamps -->
+                            <div class="card">
+                                   <div class="card-header">Időpontok</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Létrehozva:</span>
+                                                 <span class="detail-value">{{ package()!.createdAt | date:'yyyy-MM-dd
+                                                        HH:mm' }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Frissítve:</span>
+                                                 <span class="detail-value">{{ package()!.updatedAt | date:'yyyy-MM-dd
+                                                        HH:mm' }}</span>
+                                          </div>
+                                   </div>
+                            </div>
+                     </div>
+
+                     <!-- Notes -->
+                     @if (package()!.notes) {
+                     <div class="card mt-3">
+                            <div class="card-header">Megjegyzések</div>
+                            <p>{{ package()!.notes }}</p>
+                     </div>
+                     }
+                     }
+              </div>
+       </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="login-container">
+       <div class="login-card card">
+              <div class="card-header text-center">
+                     <h2>SLS Bejelentkezés</h2>
+                     <p class="text-muted">Szállítmányozó Rendszer</p>
+              </div>
+
+              @if (error()) {
+              <div class="alert alert-error">
+                     {{ error() }}
+              </div>
+              }
+
+              <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                     <div class="form-group">
+                            <label class="form-label">Email cím</label>
+                            <input type="email" class="form-control" [class.error]="email?.invalid && email?.touched"
+                                   formControlName="email" placeholder="pelda@email.com" autocomplete="email">
+                            @if (email?.invalid && email?.touched) {
+                            <div class="form-error">
+                                   @if (email?.errors?.['required']) {
+                                   Az email cím kötelező
+                                   }
+                                   @if (email?.errors?.['email']) {
+                                   Érvénytelen email cím
+                                   }
+                            </div>
+                            }
+                     </div>
+
+                     <div class="form-group">
+                            <label class="form-label">Jelszó</label>
+                            <input type="password" class="form-control"
+                                   [class.error]="password?.invalid && password?.touched" formControlName="password"
+                                   placeholder="••••••••" autocomplete="current-password">
+                            @if (password?.invalid && password?.touched) {
+                            <div class="form-error">
+                                   @if (password?.errors?.['required']) {
+                                   A jelszó kötelező
+                                   }
+                                   @if (password?.errors?.['minlength']) {
+                                   A jelszó legalább 6 karakter legyen
+                                   }
+                            </div>
+                            }
+                     </div>
+
+                     <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading()">
+                            @if (loading()) {
+                            <span class="spinner mr-1"></span>
+                            Bejelentkezés...
+                            } @else {
+                            Bejelentkezés
+                            }
+                     </button>
+              </form>
+
+              <div class="login-hint mt-3">
+                     <p class="text-small text-muted text-center">
+                            <strong>Teszt felhasználók:</strong><br>
+                            Admin: admin&#64;sls.com / admin123<br>
+                            Futár: courier&#64;sls.com / courier123
+                     </p>
+              </div>
+       </div>
+</div>

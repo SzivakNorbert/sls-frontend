@@ -1,0 +1,29 @@
+.header {
+       background: white;
+       border-bottom: 1px solid #e0e0e0;
+       padding: 15px 30px;
+       position: sticky;
+       top: 0;
+       z-index: 100;
+}
+
+.header-content {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+}
+
+.header-title {
+       margin: 0;
+       font-size: 20px;
+       color: #333;
+}
+
+.header-user {
+       display: flex;
+       align-items: center;
+}
+
+.user-info {
+       margin-right: 10px;
+}

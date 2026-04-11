@@ -1,0 +1,15 @@
+<header class="header">
+       <div class="header-content">
+              <h2 class="header-title">SLS - Szállítmányozó Rendszer</h2>
+
+              <div class="header-user">
+                     <span class="user-info">
+                            <strong>{{ userName() }}</strong>
+                            <span class="text-muted text-small">({{ userRole() }})</span>
+                     </span>
+                     <button class="btn btn-sm btn-secondary ml-2" (click)="logout()">
+                            Kijelentkezés
+                     </button>
+              </div>
+       </div>
+</header>

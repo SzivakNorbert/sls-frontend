@@ -1,0 +1,91 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Dashboard</h1>
+                     <p class="text-muted mb-3">Üdvözöllek, {{ userName() }}!</p>
+
+                     @if (loading()) {
+                     <div class="text-center p-3">
+                            <div class="spinner spinner-large"></div>
+                     </div>
+                     } @else {
+                     <!-- Admin Dashboard -->
+                     @if (isAdmin()) {
+                     <div class="grid grid-4 mb-3">
+                            <div class="stat-card card">
+                                   <div class="stat-label">Összes Csomag</div>
+                                   <div class="stat-value">{{ stats().totalPackages }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Kiszállítás Alatt</div>
+                                   <div class="stat-value text-primary">{{ stats().inTransitPackages }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Kézbesítve</div>
+                                   <div class="stat-value text-success">{{ stats().deliveredPackages }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Sikertelen</div>
+                                   <div class="stat-value text-danger">{{ stats().failedPackages }}</div>
+                            </div>
+                     </div>
+
+                     <div class="grid grid-3">
+                            <div class="stat-card card">
+                                   <div class="stat-label">Aktív Futárok</div>
+                                   <div class="stat-value">{{ stats().activeCouriers }} / {{ stats().totalCouriers }}
+                                   </div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Összes Kézbesítés</div>
+                                   <div class="stat-value">{{ stats().totalDeliveries }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Feldolgozásra Vár</div>
+                                   <div class="stat-value">{{ stats().createdPackages }}</div>
+                            </div>
+                     </div>
+
+                     <div class="quick-actions mt-3">
+                            <h3>Gyors Műveletek</h3>
+                            <div class="grid grid-3 mt-2">
+                                   <a routerLink="/packages/create" class="btn btn-primary">Új Csomag</a>
+                                   <a routerLink="/packages/assign" class="btn btn-success">Futár Hozzárendelés</a>
+                                   <a routerLink="/couriers/create" class="btn btn-secondary">Új Futár</a>
+                            </div>
+                     </div>
+                     }
+
+                     <!-- Courier Dashboard -->
+                     @if (isCourier()) {
+                     <div class="grid grid-3 mb-3">
+                            <div class="stat-card card">
+                                   <div class="stat-label">Aktív Kézbesítéseim</div>
+                                   <div class="stat-value text-primary">{{ stats().myActiveDeliveries || 0 }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Összes Kézbesítve</div>
+                                   <div class="stat-value text-success">{{ stats().myTotalDelivered || 0 }}</div>
+                            </div>
+                            <div class="stat-card card">
+                                   <div class="stat-label">Rendszerben (össz.)</div>
+                                   <div class="stat-value">{{ stats().totalPackages }}</div>
+                            </div>
+                     </div>
+
+                     <div class="quick-actions mt-3">
+                            <h3>Gyors Műveletek</h3>
+                            <div class="grid grid-2 mt-2">
+                                   <a routerLink="/deliveries/my-deliveries" class="btn btn-primary">Kézbesítéseim</a>
+                                   <a routerLink="/packages" class="btn btn-secondary">Csomagok Megtekintése</a>
+                            </div>
+                     </div>
+                     }
+                     }
+              </div>
+       </div>
+</div>

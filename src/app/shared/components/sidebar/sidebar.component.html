@@ -1,0 +1,15 @@
+<aside class="sidebar">
+       <div class="sidebar-header">
+              <h3>Navigáció</h3>
+       </div>
+
+       <nav class="sidebar-nav">
+              @for (item of filteredMenuItems; track item.route) {
+              <a [routerLink]="item.route" routerLinkActive="active"
+                     [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}" class="sidebar-link">
+                     <span class="sidebar-icon">{{ item.icon }}</span>
+                     <span class="sidebar-label">{{ item.label }}</span>
+              </a>
+              }
+       </nav>
+</aside>

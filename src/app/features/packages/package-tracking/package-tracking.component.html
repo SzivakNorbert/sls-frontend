@@ -1,0 +1,121 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Csomag Nyomkövetés</h1>
+
+                     <div class="card mt-3">
+                            <div class="search-form">
+                                   <input type="text" class="form-control" [(ngModel)]="trackingNumber"
+                                          placeholder="Add meg a tracking számot (pl. PKG-1234567890)"
+                                          (keyup.enter)="search()">
+                                   <button class="btn btn-primary ml-2" (click)="search()" [disabled]="loading()">
+                                          @if (loading()) {
+                                          <span class="spinner mr-1"></span>
+                                          }
+                                          Keresés
+                                   </button>
+                            </div>
+                     </div>
+
+                     @if (error()) {
+                     <div class="alert alert-error mt-3">
+                            {{ error() }}
+                     </div>
+                     }
+
+                     @if (package()) {
+                     <div class="card mt-3">
+                            <h3 class="mb-3">Csomag Információk</h3>
+
+                            <div class="tracking-timeline">
+                                   <div class="timeline-item active">
+                                          <div class="timeline-marker">✓</div>
+                                          <div class="timeline-content">
+                                                 <strong>Létrehozva</strong>
+                                                 <p class="text-muted text-small">
+                                                        {{ package()!.createdAt | date:'yyyy-MM-dd HH:mm' }}
+                                                 </p>
+                                          </div>
+                                   </div>
+
+                                   <div class="timeline-item" [class.active]="package()!.status !== 'CREATED'">
+                                          <div class="timeline-marker">
+                                                 @if (package()!.status !== 'CREATED') { ✓ }
+                                          </div>
+                                          <div class="timeline-content">
+                                                 <strong>Hozzárendelve</strong>
+                                                 @if (package()!.courierName) {
+                                                 <p class="text-muted text-small">Futár: {{ package()!.courierName }}
+                                                 </p>
+                                                 }
+                                          </div>
+                                   </div>
+
+                                   <div class="timeline-item"
+                                          [class.active]="package()!.status === 'IN_TRANSIT' || package()!.status === 'DELIVERED'">
+                                          <div class="timeline-marker">
+                                                 @if (package()!.status === 'IN_TRANSIT' || package()!.status ===
+                                                 'DELIVERED') { ✓ }
+                                          </div>
+                                          <div class="timeline-content">
+                                                 <strong>Szállítás alatt</strong>
+                                          </div>
+                                   </div>
+
+                                   <div class="timeline-item" [class.active]="package()!.status === 'DELIVERED'"
+                                          [class.failed]="package()!.status === 'FAILED'">
+                                          <div class="timeline-marker">
+                                                 @if (package()!.status === 'DELIVERED') { ✓ }
+                                                 @if (package()!.status === 'FAILED') { ✗ }
+                                          </div>
+                                          <div class="timeline-content">
+                                                 <strong>
+                                                        @if (package()!.status === 'DELIVERED') { Kézbesítve }
+                                                        @if (package()!.status === 'FAILED') { Sikertelen }
+                                                        @if (package()!.status !== 'DELIVERED' && package()!.status !==
+                                                        'FAILED') { Kézbesítés }
+                                                 </strong>
+                                          </div>
+                                   </div>
+                            </div>
+
+                            <div class="mt-4">
+                                   <h4>Részletek</h4>
+                                   <div class="detail-grid mt-2">
+                                          <div class="detail-row">
+                                                 <span>Címzett:</span>
+                                                 <span><strong>{{ package()!.receiverName }}</strong></span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span>Cím:</span>
+                                                 <span>{{ package()!.city }}, {{ package()!.address }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span>Súly:</span>
+                                                 <span>{{ package()!.weightKg }} kg</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span>Prioritás:</span>
+                                                 <span>
+                                                        <app-status-badge [status]="package()!.priority"
+                                                               type="priority"></app-status-badge>
+                                                 </span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span>Jelenlegi Státusz:</span>
+                                                 <span>
+                                                        <app-status-badge
+                                                               [status]="package()!.status"></app-status-badge>
+                                                 </span>
+                                          </div>
+                                   </div>
+                            </div>
+                     </div>
+                     }
+              </div>
+       </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Új Csomag Létrehozása</h1>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (success()) {
+                     <div class="alert alert-success">
+                            Csomag sikeresen létrehozva! Átirányítás...
+                     </div>
+                     }
+
+                     <div class="card mt-3">
+                            <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
+                                   <div class="grid grid-2">
+                                          <!-- Sender Info -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Feladó neve *</label>
+                                                 <input type="text" class="form-control" formControlName="senderName"
+                                                        [class.error]="packageForm.get('senderName')?.invalid && packageForm.get('senderName')?.touched">
+                                          </div>
+
+                                          <!-- Receiver Info -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Címzett neve *</label>
+                                                 <input type="text" class="form-control" formControlName="receiverName"
+                                                        [class.error]="packageForm.get('receiverName')?.invalid && packageForm.get('receiverName')?.touched">
+                                          </div>
+
+                                          <!-- Address -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Cím *</label>
+                                                 <input type="text" class="form-control" formControlName="address"
+                                                        placeholder="Utca, házszám"
+                                                        [class.error]="packageForm.get('address')?.invalid && packageForm.get('address')?.touched">
+                                          </div>
+
+                                          <!-- City -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Város *</label>
+                                                 <input type="text" class="form-control" formControlName="city"
+                                                        [class.error]="packageForm.get('city')?.invalid && packageForm.get('city')?.touched">
+                                          </div>
+
+                                          <!-- Postal Code -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Irányítószám *</label>
+                                                 <input type="text" class="form-control" formControlName="postalCode"
+                                                        [class.error]="packageForm.get('postalCode')?.invalid && packageForm.get('postalCode')?.touched">
+                                          </div>
+
+                                          <!-- Weight -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Súly (kg) *</label>
+                                                 <input type="number" step="0.01" class="form-control"
+                                                        formControlName="weightKg"
+                                                        [class.error]="packageForm.get('weightKg')?.invalid && packageForm.get('weightKg')?.touched">
+                                          </div>
+
+                                          <!-- Dimensions -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Méretek (pl. 20x30x10)</label>
+                                                 <input type="text" class="form-control" formControlName="dimensions"
+                                                        placeholder="20x30x10">
+                                          </div>
+
+                                          <!-- Priority -->
+                                          <div class="form-group">
+                                                 <label class="form-label">Prioritás *</label>
+                                                 <select class="form-control" formControlName="priority">
+                                                        @for (priority of priorities; track priority) {
+                                                        <option [value]="priority">{{ priority }}</option>
+                                                        }
+                                                 </select>
+                                          </div>
+                                   </div>
+
+                                   <!-- Notes -->
+                                   <div class="form-group">
+                                          <label class="form-label">Megjegyzések</label>
+                                          <textarea class="form-control" formControlName="notes" rows="3"
+                                                 placeholder="Opcionális megjegyzések..."></textarea>
+                                   </div>
+
+                                   <!-- Actions -->
+                                   <div class="flex-gap mt-3">
+                                          <button type="submit" class="btn btn-primary"
+                                                 [disabled]="loading() || success()">
+                                                 @if (loading()) {
+                                                 <span class="spinner mr-1"></span>
+                                                 }
+                                                 Létrehozás
+                                          </button>
+                                          <button type="button" class="btn btn-secondary" (click)="cancel()"
+                                                 [disabled]="loading()">
+                                                 Mégse
+                                          </button>
+                                   </div>
+                            </form>
+                     </div>
+              </div>
+       </div>
+</div>

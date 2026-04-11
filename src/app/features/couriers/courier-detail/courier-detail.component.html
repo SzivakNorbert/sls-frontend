@@ -1,0 +1,109 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <div class="flex-between mb-3">
+                            <h1>Futár Részletei</h1>
+                            <button class="btn btn-secondary" (click)="goBack()">Vissza</button>
+                     </div>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Futár betöltése..."></app-loading-spinner>
+                     } @else if (courier()) {
+                     <div class="grid grid-2">
+                            <!-- Personal Info -->
+                            <div class="card">
+                                   <div class="card-header">Személyes Adatok</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Név:</span>
+                                                 <span class="detail-value"><strong>{{ courier()!.name
+                                                               }}</strong></span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Email:</span>
+                                                 <span class="detail-value">{{ courier()!.email }}</span>
+                                          </div>
+                                          @if (courier()!.phone) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Telefon:</span>
+                                                 <span class="detail-value">{{ courier()!.phone }}</span>
+                                          </div>
+                                          }
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Státusz:</span>
+                                                 <span class="detail-value">
+                                                        @if (courier()!.isActive) {
+                                                        <span class="badge badge-delivered">Aktív</span>
+                                                        } @else {
+                                                        <span class="badge badge-failed">Inaktív</span>
+                                                        }
+                                                 </span>
+                                          </div>
+                                   </div>
+                            </div>
+
+                            <!-- Vehicle Info -->
+                            <div class="card">
+                                   <div class="card-header">Jármű Információk</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Jármű típus:</span>
+                                                 <span class="detail-value">{{ courier()!.vehicleType }}</span>
+                                          </div>
+                                          @if (courier()!.licensePlate) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Rendszám:</span>
+                                                 <span class="detail-value">{{ courier()!.licensePlate }}</span>
+                                          </div>
+                                          }
+                                          @if (courier()!.maxWeightKg) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Max. teherbírás:</span>
+                                                 <span class="detail-value">{{ courier()!.maxWeightKg }} kg</span>
+                                          </div>
+                                          }
+                                   </div>
+                            </div>
+
+                            <!-- Statistics -->
+                            <div class="card">
+                                   <div class="card-header">Statisztikák</div>
+                                   <div class="stat-grid">
+                                          <div class="stat-item">
+                                                 <div class="stat-label">Aktív Kézbesítések</div>
+                                                 <div class="stat-value text-primary">{{ courier()!.activeDeliveries }}
+                                                 </div>
+                                          </div>
+                                          <div class="stat-item">
+                                                 <div class="stat-label">Összes Kézbesítve</div>
+                                                 <div class="stat-value text-success">{{ courier()!.totalDelivered }}
+                                                 </div>
+                                          </div>
+                                   </div>
+                            </div>
+                     </div>
+
+                     <!-- Quick Actions -->
+                     <div class="card mt-3">
+                            <div class="card-header">Gyors Műveletek</div>
+                            <div class="flex-gap mt-2">
+                                   <a [routerLink]="['/deliveries/courier', courier()!.id]" class="btn btn-primary">
+                                          Kézbesítések Megtekintése
+                                   </a>
+                                   <a routerLink="/packages/assign" class="btn btn-success">
+                                          Csomag Hozzárendelése
+                                   </a>
+                            </div>
+                     </div>
+                     }
+              </div>
+       </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="layout">
+       <app-sidebar></app-sidebar>
+
+       <div class="main-content">
+              <app-header></app-header>
+
+              <div class="container">
+                     <h1>Futár Hozzárendelése Csomaghoz</h1>
+
+                     @if (error()) {
+                     <div class="alert alert-error">{{ error() }}</div>
+                     }
+
+                     @if (success()) {
+                     <div class="alert alert-success">
+                            Futár sikeresen hozzárendelve! Átirányítás...
+                     </div>
+                     }
+
+                     @if (loading()) {
+                     <div class="text-center p-3">
+                            <div class="spinner spinner-large"></div>
+                     </div>
+                     } @else {
+                     <div class="card mt-3">
+                            <form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
+                                   <div class="form-group">
+                                          <label class="form-label">Válassz Csomagot *</label>
+                                          <select class="form-control" formControlName="packageId">
+                                                 <option value="">-- Válassz egy csomagot --</option>
+                                                 @for (pkg of packages(); track pkg.id) {
+                                                 <option [value]="pkg.id">
+                                                        {{ pkg.trackingNumber }} - {{ pkg.receiverName }} ({{ pkg.city
+                                                        }}, {{ pkg.weightKg }} kg)
+                                                 </option>
+                                                 }
+                                          </select>
+                                          @if (packages().length === 0) {
+                                          <p class="text-small text-muted mt-1">
+                                                 Nincs hozzárendelhető csomag (csak CREATED státuszú csomagokat lehet
+                                                 hozzárendelni)
+                                          </p>
+                                          }
+                                   </div>
+
+                                   <div class="form-group">
+                                          <label class="form-label">Válassz Futárt *</label>
+                                          <select class="form-control" formControlName="courierId">
+                                                 <option value="">-- Válassz egy futárt --</option>
+                                                 @for (courier of couriers(); track courier.id) {
+                                                 <option [value]="courier.id">
+                                                        {{ courier.name }} - {{ courier.vehicleType }}
+                                                        (Aktív: {{ courier.activeDeliveries }}, Max: {{
+                                                        courier.maxWeightKg }} kg)
+                                                 </option>
+                                                 }
+                                          </select>
+                                          @if (couriers().length === 0) {
+                                          <p class="text-small text-muted mt-1">
+                                                 Nincs elérhető futár
+                                          </p>
+                                          }
+                                   </div>
+
+                                   <div class="flex-gap mt-3">
+                                          <button type="submit" class="btn btn-success"
+                                                 [disabled]="assignForm.invalid || submitting() || success() || packages().length === 0 || couriers().length === 0">
+                                                 @if (submitting()) {
+                                                 <span class="spinner mr-1"></span>
+                                                 }
+                                                 Hozzárendelés
+                                          </button>
+                                          <button type="button" class="btn btn-secondary" (click)="cancel()"
+                                                 [disabled]="submitting()">
+                                                 Mégse
+                                          </button>
+                                   </div>
+                            </form>
+                     </div>
+                     }
+              </div>
+       </div>
+</div>
