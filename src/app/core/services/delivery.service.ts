@@ -2,25 +2,22 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { Delivery, UpdateStatusRequest } from '../models/delivery.model';
 
-@Injectable({
-       providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DeliveryService {
        private http = inject(HttpClient);
        private apiUrl = `${environment.apiUrl}/deliveries`;
 
-       getAll(): Observable<ApiResponse<Delivery[]>> {
-              return this.http.get<ApiResponse<Delivery[]>>(this.apiUrl);
+       getAll(): Observable<Delivery[]> {
+              return this.http.get<Delivery[]>(this.apiUrl);
        }
 
-       getByCourierId(courierId: number): Observable<ApiResponse<Delivery[]>> {
-              return this.http.get<ApiResponse<Delivery[]>>(`${this.apiUrl}/courier/${courierId}`);
+       getByCourierId(courierId: number): Observable<Delivery[]> {
+              return this.http.get<Delivery[]>(`${this.apiUrl}/courier/${courierId}`);
        }
 
-       updateStatus(deliveryId: number, request: UpdateStatusRequest): Observable<ApiResponse<Delivery>> {
-              return this.http.patch<ApiResponse<Delivery>>(`${this.apiUrl}/${deliveryId}/status`, request);
+       updateStatus(deliveryId: number, request: UpdateStatusRequest): Observable<Delivery> {
+              return this.http.patch<Delivery>(`${this.apiUrl}/${deliveryId}/status`, request);
        }
 }

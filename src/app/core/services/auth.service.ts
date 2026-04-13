@@ -3,12 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { LoginRequest, AuthResponse, UserRole } from '../models/user.model';
 
-@Injectable({
-       providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
        private http = inject(HttpClient);
        private router = inject(Router);
@@ -27,20 +24,17 @@ export class AuthService {
               return !!localStorage.getItem('token');
        }
 
-       login(credentials: LoginRequest): Observable<ApiResponse<AuthResponse>> {
-              return this.http.post<ApiResponse<AuthResponse>>(
-                     `${environment.apiUrl}/auth/login`,
-                     credentials
-              ).pipe(
-                     tap(response => {
-                            if (response.success && response.data) {
-                                   localStorage.setItem('token', response.data.token);
-                                   localStorage.setItem('currentUser', JSON.stringify(response.data));
-                                   this.currentUserSubject.next(response.data);
+       login(credentials: LoginRequest): Observable<AuthResponse> {
+              return this.http
+                     .post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
+                     .pipe(
+                            tap((response) => {
+                                   localStorage.setItem('token', response.token);
+                                   localStorage.setItem('currentUser', JSON.stringify(response));
+                                   this.currentUserSubject.next(response);
                                    this.isLoggedIn.set(true);
-                            }
-                     })
-              );
+                            })
+                     );
        }
 
        logout(): void {

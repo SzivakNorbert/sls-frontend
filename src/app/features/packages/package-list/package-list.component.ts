@@ -53,11 +53,9 @@ export class PackageListComponent implements OnInit {
     this.error.set(null);
 
     this.packageService.getAll().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.packages.set(response.data);
-          this.applyFilters();
-        }
+      next: (packages) => {
+        this.packages.set(packages);
+        this.applyFilters();
         this.loading.set(false);
       },
       error: (err) => {

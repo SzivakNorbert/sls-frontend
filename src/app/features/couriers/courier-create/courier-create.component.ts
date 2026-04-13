@@ -49,13 +49,11 @@ export class CourierCreateComponent {
     this.success.set(false);
 
     this.courierService.create(this.courierForm.value).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.success.set(true);
-          setTimeout(() => {
-            this.router.navigate(['/couriers', response.data.id]);
-          }, 1500);
-        }
+      next: (created) => {
+        this.success.set(true);
+        setTimeout(() => {
+          this.router.navigate(['/couriers', created.id]);
+        }, 1500);
       },
       error: (err) => {
         this.error.set(err.message);

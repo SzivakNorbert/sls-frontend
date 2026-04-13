@@ -82,16 +82,14 @@ export class MyDeliveriesComponent implements OnInit {
     }
 
     this.courierService.getAll().subscribe({
-      next: (response) => {
-        if (response.success) {
-          const myCourier = response.data.find(c => c.userId === userId);
-          if (myCourier) {
-            this.courierId.set(myCourier.id);
-            this.loadMyDeliveries(myCourier.id);
-          } else {
-            this.error.set('Nincs futár profil ehhez a felhasználóhoz');
-            this.loading.set(false);
-          }
+      next: (couriers) => {
+        const myCourier = couriers.find((c) => c.userId === userId);
+        if (myCourier) {
+          this.courierId.set(myCourier.id);
+          this.loadMyDeliveries(myCourier.id);
+        } else {
+          this.error.set('Nincs futár profil ehhez a felhasználóhoz');
+          this.loading.set(false);
         }
       },
       error: (err) => {
@@ -106,10 +104,8 @@ export class MyDeliveriesComponent implements OnInit {
     this.error.set(null);
 
     this.deliveryService.getByCourierId(courierId).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.deliveries.set(response.data);
-        }
+      next: (deliveries) => {
+        this.deliveries.set(deliveries);
         this.loading.set(false);
       },
       error: (err) => {
@@ -146,14 +142,12 @@ export class MyDeliveriesComponent implements OnInit {
       this.selectedDelivery()!.id,
       this.updateForm.value
     ).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.updateSuccess.set(true);
-          setTimeout(() => {
-            this.closeUpdateModal();
-            this.loadMyDeliveries(this.courierId()!);
-          }, 1500);
-        }
+      next: () => {
+        this.updateSuccess.set(true);
+        setTimeout(() => {
+          this.closeUpdateModal();
+          this.loadMyDeliveries(this.courierId()!);
+        }, 1500);
       },
       error: (err) => {
         alert('Hiba: ' + err.message);

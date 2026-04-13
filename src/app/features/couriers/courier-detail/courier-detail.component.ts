@@ -35,10 +35,8 @@ export class CourierDetailComponent implements OnInit {
     this.error.set(null);
 
     this.courierService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.courier.set(response.data);
-        }
+      next: (courier) => {
+        this.courier.set(courier);
         this.loading.set(false);
       },
       error: (err) => {

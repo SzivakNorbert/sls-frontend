@@ -31,10 +31,8 @@ export class DeliveryListComponent implements OnInit {
     this.error.set(null);
 
     this.deliveryService.getAll().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.deliveries.set(response.data);
-        }
+      next: (deliveries) => {
+        this.deliveries.set(deliveries);
         this.loading.set(false);
       },
       error: (err) => {

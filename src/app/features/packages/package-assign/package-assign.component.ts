@@ -51,12 +51,12 @@ export class PackageAssignComponent implements OnInit {
     }).subscribe({
       next: (result) => {
         // Only show CREATED packages
-        const allPackages = result.packages.data || [];
-        this.packages.set(allPackages.filter(p => p.status === PackageStatus.CREATED));
+        const allPackages = result.packages; // already Package[]
+        this.packages.set(allPackages.filter((p) => p.status === PackageStatus.CREATED));
 
         // Only show active couriers
-        const allCouriers = result.couriers.data || [];
-        this.couriers.set(allCouriers.filter(c => c.isActive));
+        const allCouriers = result.couriers; // already Courier[]
+        this.couriers.set(allCouriers.filter((c) => c.isActive));
 
         this.loading.set(false);
       },
@@ -77,13 +77,11 @@ export class PackageAssignComponent implements OnInit {
     this.success.set(false);
 
     this.packageService.assignCourier(this.assignForm.value).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.success.set(true);
-          setTimeout(() => {
-            this.router.navigate(['/deliveries']);
-          }, 1500);
-        }
+      next: () => {
+        this.success.set(true);
+        setTimeout(() => {
+          this.router.navigate(['/deliveries']);
+        }, 1500);
       },
       error: (err) => {
         this.error.set(err.message);

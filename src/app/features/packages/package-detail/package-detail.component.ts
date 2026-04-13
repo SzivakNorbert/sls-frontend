@@ -43,10 +43,8 @@ export class PackageDetailComponent implements OnInit {
     this.error.set(null);
 
     this.packageService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.package.set(response.data);
-        }
+      next: (pkg) => {
+        this.package.set(pkg);
         this.loading.set(false);
       },
       error: (err) => {

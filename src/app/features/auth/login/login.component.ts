@@ -37,11 +37,9 @@ export class LoginComponent {
     this.error.set(null);
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: (response) => {
-        if (response.success) {
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-          this.router.navigate([returnUrl]);
-        }
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigate([returnUrl]);
       },
       error: (err) => {
         this.error.set(err.message || 'Bejelentkezés sikertelen');

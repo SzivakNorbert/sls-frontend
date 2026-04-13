@@ -33,14 +33,12 @@ export class PackageTrackingComponent {
     this.package.set(null);
 
     this.packageService.getByTrackingNumber(this.trackingNumber).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.package.set(response.data);
-        }
+      next: (pkg) => {
+        this.package.set(pkg);
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.message || 'Csomag nem található');
+        this.error.set(err.message);
         this.loading.set(false);
       }
     });

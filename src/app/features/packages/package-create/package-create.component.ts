@@ -53,13 +53,11 @@ export class PackageCreateComponent {
     this.success.set(false);
 
     this.packageService.create(this.packageForm.value).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.success.set(true);
-          setTimeout(() => {
-            this.router.navigate(['/packages', response.data.id]);
-          }, 1500);
-        }
+      next: (created) => {
+        this.success.set(true);
+        setTimeout(() => {
+          this.router.navigate(['/packages', created.id]);
+        }, 1500);
       },
       error: (err) => {
         this.error.set(err.message);

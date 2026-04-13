@@ -30,10 +30,8 @@ export class CourierListComponent implements OnInit {
     this.error.set(null);
 
     this.courierService.getAll().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.couriers.set(response.data);
-        }
+      next: (couriers) => {
+        this.couriers.set(couriers);
         this.loading.set(false);
       },
       error: (err) => {
