@@ -54,6 +54,7 @@ export class AuthService {
                                    if (this.isBrowser()) {
                                           localStorage.setItem('token', response.token);
                                           if (response.expiresIn) {
+                                                 // expiresIn is expected to be in seconds (standard JWT convention)
                                                  localStorage.setItem('tokenExpiry', String(Date.now() + response.expiresIn * 1000));
                                           }
                                           localStorage.setItem('currentUser', JSON.stringify(response));
