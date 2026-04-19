@@ -10,10 +10,76 @@
                             <button class="btn btn-secondary" (click)="goBack()">Vissza</button>
                      </div>
 
-                     <div class="alert alert-info">
-                            A részletes kézbesítés nézet a backend API-ban nincs implementálva.
-                            Használd a "Saját Kézbesítések" menüpontot futárként, vagy a csomagok listáját.
+                     @if (error()) {
+                     <div class="alert alert-error">
+                            {{ error() }}
                      </div>
+                     }
+
+                     @if (loading()) {
+                     <app-loading-spinner message="Kézbesítés betöltése..."></app-loading-spinner>
+                     } @else if (delivery()) {
+                     <div class="grid grid-2">
+                            <!-- Basic Info -->
+                            <div class="card">
+                                   <div class="card-header">Alapadatok</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Tracking Szám:</span>
+                                                 <span class="detail-value"><strong>{{ delivery()!.trackingNumber }}</strong></span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Státusz:</span>
+                                                 <span class="detail-value">
+                                                        <app-status-badge [status]="delivery()!.status" type="delivery"></app-status-badge>
+                                                 </span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Hozzárendelve:</span>
+                                                 <span class="detail-value">{{ delivery()!.assignedAt | date:'yyyy-MM-dd HH:mm' }}</span>
+                                          </div>
+                                          @if (delivery()!.deliveredAt) {
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Kézbesítve:</span>
+                                                 <span class="detail-value">{{ delivery()!.deliveredAt | date:'yyyy-MM-dd HH:mm' }}</span>
+                                          </div>
+                                          }
+                                   </div>
+                            </div>
+
+                            <!-- Recipient & Courier -->
+                            <div class="card">
+                                   <div class="card-header">Címzett és Futár</div>
+                                   <div class="detail-grid">
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Címzett:</span>
+                                                 <span class="detail-value">{{ delivery()!.receiverName }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Cím:</span>
+                                                 <span class="detail-value">{{ delivery()!.city }}, {{ delivery()!.address }}</span>
+                                          </div>
+                                          <div class="detail-row">
+                                                 <span class="detail-label">Futár:</span>
+                                                 <span class="detail-value">{{ delivery()!.courierName }}</span>
+                                          </div>
+                                   </div>
+                            </div>
+                     </div>
+
+                     @if (delivery()!.deliveryNotes) {
+                     <div class="card mt-3">
+                            <div class="card-header">Megjegyzések</div>
+                            <p>{{ delivery()!.deliveryNotes }}</p>
+                     </div>
+                     }
+
+                     <div class="flex-gap mt-3">
+                            <a [routerLink]="['/packages', delivery()!.packageId]" class="btn btn-primary">
+                                   Csomag Megtekintése
+                            </a>
+                     </div>
+                     }
               </div>
        </div>
 </div>

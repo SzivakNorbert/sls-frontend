@@ -13,6 +13,10 @@ export class DeliveryService {
               return this.http.get<Delivery[]>(this.apiUrl);
        }
 
+       getById(id: number): Observable<Delivery> {
+              return this.http.get<Delivery>(`${this.apiUrl}/${id}`);
+       }
+
        getByCourierId(courierId: number): Observable<Delivery[]> {
               return this.http.get<Delivery[]>(`${this.apiUrl}/courier/${courierId}`);
        }

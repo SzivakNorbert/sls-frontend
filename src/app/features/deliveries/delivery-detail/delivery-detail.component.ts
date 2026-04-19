@@ -35,11 +35,16 @@ export class DeliveryDetailComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    // Note: Backend doesn't have getById for deliveries, 
-    // we'd need to get all and filter, or add the endpoint
-    // For now, just show an error
-    this.error.set('Delivery detail endpoint not implemented in backend');
-    this.loading.set(false);
+    this.deliveryService.getById(id).subscribe({
+      next: (delivery) => {
+        this.delivery.set(delivery);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.loading.set(false);
+      }
+    });
   }
 
   goBack(): void {

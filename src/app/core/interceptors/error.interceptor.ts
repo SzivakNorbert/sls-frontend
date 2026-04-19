@@ -21,7 +21,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                                    case 401:
                                           errorMessage = 'Nem vagy bejelentkezve';
                                           authService.logout();
-                                          router.navigate(['/login']);
                                           break;
                                    case 403:
                                           errorMessage = 'Nincs jogosultságod ehhez a művelethez';
