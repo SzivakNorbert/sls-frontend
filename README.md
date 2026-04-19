@@ -1,27 +1,106 @@
-# SlsFrontend
+# SLS Frontend – Szállítmányozó Rendszer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
+Angular 18 alapú frontend a szállítmányozó rendszerhez.
 
-## Development server
+## Követelmények
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18+
+- Angular CLI 18: `npm install -g @angular/cli`
+- Futó backend: alapértelmezés szerint `http://localhost:8080/api`
 
-## Code scaffolding
+## Indítás fejlesztői módban
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm install
+npm start        # http://localhost:4200 megnyitása automatikus
+```
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build          # fejlesztői build
+npm run build:prod     # production build (fileReplacements aktív)
+```
 
-## Running unit tests
+## Környezeti változók
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+| Fájl | Érték | Mikor használatos |
+|------|-------|-------------------|
+| `src/environments/environment.ts` | `apiUrl: 'http://localhost:8080/api'` | `ng serve` / dev build |
+| `src/environments/environment.prod.ts` | `apiUrl: 'http://localhost:8080/api'` | production build – **ezt kell módosítani deploy előtt** |
 
-## Running end-to-end tests
+> Production API URL megadása: `src/environments/environment.prod.ts` fájlban írd át az `apiUrl` értéket.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## CORS
 
-## Further help
+A backend `http://localhost:8080`-on fut. Fejlesztői szerveren a böngésző CORS-kérést küld.
+A backendnek engedélyeznie kell az `http://localhost:4200` origint.  
+Proxy használata (opcionális): hozz létre `proxy.conf.json` fájlt és add meg a `serve` konfigurációban.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Autentikáció
+
+- `POST /api/auth/login` → JWT token, lejárat: `expiresIn` másodpercben
+- A token `localStorage`-ba kerül, minden API-kéréshez `Authorization: Bearer <token>` header adódik hozzá
+- Lejárt token esetén automatikus kijelentkezés
+- Szerepkörök: `ADMIN`, `COURIER`
+
+### Teszt felhasználók (ha a backend demo adatokkal van feltöltve)
+
+| Szerepkör | Email | Jelszó |
+|-----------|-------|--------|
+| Admin | admin@sls.com | admin123 |
+| Futár | courier@sls.com | courier123 |
+
+## Fő oldalak és üzleti folyamatok
+
+| Route | Szerepkör | Leírás |
+|-------|-----------|--------|
+| `/login` | Mindenki | Bejelentkezés |
+| `/dashboard` | ADMIN, COURIER | Összefoglaló statisztikák |
+| `/packages` | ADMIN, COURIER | Csomaglista szűrőkkel |
+| `/packages/create` | ADMIN | Új csomag létrehozása |
+| `/packages/assign` | ADMIN | Csomag futárhoz rendelése (kézbesítés indítás) |
+| `/packages/tracking` | ADMIN, COURIER | Csomag nyomkövetése tracking szám alapján |
+| `/packages/:id` | ADMIN, COURIER | Csomag részletei |
+| `/couriers` | ADMIN | Futárlista |
+| `/couriers/create` | ADMIN | Új futárprofil létrehozása |
+| `/couriers/:id` | ADMIN | Futár részletei, statisztikák |
+| `/deliveries` | ADMIN | Összes kézbesítés listája |
+| `/deliveries/:id` | ADMIN | Kézbesítés részletei |
+| `/deliveries/my-deliveries` | COURIER | Saját kézbesítések + státuszfrissítés |
+
+### Státusz-átmenetek (csomag / kézbesítés)
+
+```
+CREATED → (assign) → ASSIGNED
+ASSIGNED → IN_TRANSIT → DELIVERED
+                      → FAILED
+```
+
+## API végpontok összefoglalója
+
+| Metódus | Végpont | Leírás |
+|---------|---------|--------|
+| POST | `/api/auth/login` | Bejelentkezés |
+| GET | `/api/packages` | Összes csomag |
+| POST | `/api/packages` | Új csomag |
+| GET | `/api/packages/:id` | Csomag részletei |
+| GET | `/api/packages/tracking/:trackingNumber` | Nyomkövetés |
+| POST | `/api/packages/assign` | Futár hozzárendelése |
+| GET | `/api/couriers` | Összes futár |
+| POST | `/api/couriers` | Új futár |
+| GET | `/api/couriers/:id` | Futár részletei |
+| GET | `/api/deliveries` | Összes kézbesítés |
+| GET | `/api/deliveries/:id` | Kézbesítés részletei |
+| GET | `/api/deliveries/courier/:courierId` | Futár kézbesítései |
+| PATCH | `/api/deliveries/:id/status` | Státusz frissítése |
+
+## Tesztek futtatása
+
+```bash
+ng test
+```
+
+## Ismert korlátozások
+
+- SSR (`server.ts`) be van kötve, de productionban külön Node szerver szükséges hozzá (`node dist/sls-frontend/server/server.mjs`).

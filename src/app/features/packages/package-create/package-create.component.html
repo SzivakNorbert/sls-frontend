@@ -25,6 +25,12 @@
                                                  <label class="form-label">Feladó neve *</label>
                                                  <input type="text" class="form-control" formControlName="senderName"
                                                         [class.error]="packageForm.get('senderName')?.invalid && packageForm.get('senderName')?.touched">
+                                                 @if (packageForm.get('senderName')?.invalid && packageForm.get('senderName')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('senderName')?.errors?.['required']) { A feladó neve kötelező. }
+                                                        @if (packageForm.get('senderName')?.errors?.['maxlength']) { Maximum 100 karakter. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- Receiver Info -->
@@ -32,6 +38,12 @@
                                                  <label class="form-label">Címzett neve *</label>
                                                  <input type="text" class="form-control" formControlName="receiverName"
                                                         [class.error]="packageForm.get('receiverName')?.invalid && packageForm.get('receiverName')?.touched">
+                                                 @if (packageForm.get('receiverName')?.invalid && packageForm.get('receiverName')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('receiverName')?.errors?.['required']) { A címzett neve kötelező. }
+                                                        @if (packageForm.get('receiverName')?.errors?.['maxlength']) { Maximum 100 karakter. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- Address -->
@@ -40,6 +52,12 @@
                                                  <input type="text" class="form-control" formControlName="address"
                                                         placeholder="Utca, házszám"
                                                         [class.error]="packageForm.get('address')?.invalid && packageForm.get('address')?.touched">
+                                                 @if (packageForm.get('address')?.invalid && packageForm.get('address')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('address')?.errors?.['required']) { A cím kötelező. }
+                                                        @if (packageForm.get('address')?.errors?.['maxlength']) { Maximum 255 karakter. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- City -->
@@ -47,13 +65,27 @@
                                                  <label class="form-label">Város *</label>
                                                  <input type="text" class="form-control" formControlName="city"
                                                         [class.error]="packageForm.get('city')?.invalid && packageForm.get('city')?.touched">
+                                                 @if (packageForm.get('city')?.invalid && packageForm.get('city')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('city')?.errors?.['required']) { A város neve kötelező. }
+                                                        @if (packageForm.get('city')?.errors?.['maxlength']) { Maximum 100 karakter. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- Postal Code -->
                                           <div class="form-group">
                                                  <label class="form-label">Irányítószám *</label>
                                                  <input type="text" class="form-control" formControlName="postalCode"
+                                                        placeholder="pl. 1234"
                                                         [class.error]="packageForm.get('postalCode')?.invalid && packageForm.get('postalCode')?.touched">
+                                                 @if (packageForm.get('postalCode')?.invalid && packageForm.get('postalCode')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('postalCode')?.errors?.['required']) { Az irányítószám kötelező. }
+                                                        @if (packageForm.get('postalCode')?.errors?.['pattern']) { Csak számjegyekből állhat (4–10 jegy). }
+                                                        @if (packageForm.get('postalCode')?.errors?.['maxlength']) { Maximum 10 karakter. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- Weight -->
@@ -62,6 +94,13 @@
                                                  <input type="number" step="0.01" class="form-control"
                                                         formControlName="weightKg"
                                                         [class.error]="packageForm.get('weightKg')?.invalid && packageForm.get('weightKg')?.touched">
+                                                 @if (packageForm.get('weightKg')?.invalid && packageForm.get('weightKg')?.touched) {
+                                                 <div class="form-error">
+                                                        @if (packageForm.get('weightKg')?.errors?.['required']) { A súly megadása kötelező. }
+                                                        @if (packageForm.get('weightKg')?.errors?.['min']) { Minimális súly: 0.01 kg. }
+                                                        @if (packageForm.get('weightKg')?.errors?.['max']) { Maximális súly: 9999.99 kg. }
+                                                 </div>
+                                                 }
                                           </div>
 
                                           <!-- Dimensions -->

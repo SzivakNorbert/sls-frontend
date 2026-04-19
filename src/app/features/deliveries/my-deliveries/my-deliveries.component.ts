@@ -150,7 +150,7 @@ export class MyDeliveriesComponent implements OnInit {
         }, 1500);
       },
       error: (err) => {
-        alert('Hiba: ' + err.message);
+        this.error.set(err.message);
         this.updating.set(false);
       }
     });
