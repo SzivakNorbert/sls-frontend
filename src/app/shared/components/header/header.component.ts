@@ -18,6 +18,7 @@ export class HeaderComponent {
   userEmail = signal(this.authService.getCurrentUser()?.email || '');
   userRole = signal(this.authService.getCurrentUser()?.role || '');
 
+
   logout(): void {
     if (confirm('Biztosan ki szeretnél jelentkezni?')) {
       this.authService.logout();

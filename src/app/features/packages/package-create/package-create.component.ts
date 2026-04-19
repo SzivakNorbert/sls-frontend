@@ -32,8 +32,7 @@ export class PackageCreateComponent {
       receiverName: ['', [Validators.required, Validators.maxLength(100)]],
       address: ['', [Validators.required, Validators.maxLength(255)]],
       city: ['', [Validators.required, Validators.maxLength(100)]],
-      postalCode: ['', [Validators.required, Validators.maxLength(10)]],
-      weightKg: ['', [Validators.required, Validators.min(0.01), Validators.max(9999.99)]],
+      postalCode: ['', [Validators.required, Validators.maxLength(10), Validators.pattern(/^\d{4,10}$/)]], weightKg: ['', [Validators.required, Validators.min(0.01), Validators.max(9999.99)]],
       dimensions: ['', Validators.maxLength(50)],
       priority: [PackagePriority.NORMAL, Validators.required],
       notes: ['', Validators.maxLength(1000)]
