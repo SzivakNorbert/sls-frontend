@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PackageService } from '../../../core/services/package.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Package, PackageStatus, PackagePriority } from '../../../core/models/package.model';
+import { Package } from '../../../core/models/package.model';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
@@ -52,7 +52,11 @@ export class PackageListComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.packageService.getAll().subscribe({
+    const request$ = this.isAdmin()
+      ? this.packageService.getAll()
+      : this.packageService.getMyPackages();
+
+    request$.subscribe({
       next: (packages) => {
         this.packages.set(packages);
         this.applyFilters();

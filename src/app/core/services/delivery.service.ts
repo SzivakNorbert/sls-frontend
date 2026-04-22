@@ -21,6 +21,10 @@ export class DeliveryService {
               return this.http.get<Delivery[]>(`${this.apiUrl}/courier/${courierId}`);
        }
 
+       getMyDeliveries(): Observable<Delivery[]> {
+              return this.http.get<Delivery[]>(`${this.apiUrl}/my`);
+       }
+
        updateStatus(deliveryId: number, request: UpdateStatusRequest): Observable<Delivery> {
               return this.http.patch<Delivery>(`${this.apiUrl}/${deliveryId}/status`, request);
        }

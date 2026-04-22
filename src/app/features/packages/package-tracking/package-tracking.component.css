@@ -10,45 +10,33 @@
 
 .tracking-timeline {
        display: flex;
-       justify-content: space-between;
-       position: relative;
-       padding: 40px 0;
-}
-
-.tracking-timeline::before {
-       content: '';
-       position: absolute;
-       top: 60px;
-       left: 0;
-       right: 0;
-       height: 2px;
-       background: #e0e0e0;
-       z-index: 0;
+       flex-direction: column;
+       gap: 14px;
 }
 
 .timeline-item {
-       flex: 1;
-       text-align: center;
-       position: relative;
-       z-index: 1;
+       display: flex;
+       gap: 10px;
+       align-items: flex-start;
+       padding: 10px;
+       border: 1px solid #ececec;
+       border-radius: 8px;
+       background: #fafafa;
 }
 
 .timeline-marker {
-       width: 40px;
-       height: 40px;
+       width: 30px;
+       height: 30px;
        border-radius: 50%;
-       background: #e0e0e0;
+       background: #28a745;
        color: white;
        display: flex;
        align-items: center;
        justify-content: center;
-       margin: 0 auto 10px;
+       margin: 0;
        font-weight: bold;
-       font-size: 20px;
-}
-
-.timeline-item.active .timeline-marker {
-       background: #28a745;
+       font-size: 14px;
+       flex-shrink: 0;
 }
 
 .timeline-item.failed .timeline-marker {

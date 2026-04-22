@@ -55,12 +55,18 @@
                      </button>
               </form>
 
-              <div class="login-hint mt-3">
-                     <p class="text-small text-muted text-center">
-                            <strong>Teszt felhasználók:</strong><br>
-                            Admin: admin&#64;sls.com / admin123<br>
-                            Futár: courier&#64;sls.com / courier123
-                     </p>
-              </div>
-       </div>
+               <div class="login-hint mt-3">
+                      <p class="text-small text-muted text-center">
+                             <strong>Teszt felhasználók (kattintható):</strong>
+                      </p>
+                      <div class="test-users">
+                             @for (testUser of testUsers; track testUser.email) {
+                             <button type="button" class="test-user-btn" [disabled]="loading()"
+                                    (click)="loginAs(testUser)">
+                                    {{ testUser.label }}: {{ testUser.email }} / {{ testUser.password }}
+                             </button>
+                             }
+                      </div>
+               </div>
+        </div>
 </div>

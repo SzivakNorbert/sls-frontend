@@ -3,14 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DeliveryService } from '../../../core/services/delivery.service';
-import { CourierService } from '../../../core/services/courier.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { Delivery, DeliveryStatus } from '../../../core/models/delivery.model';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { StatusBadgeComponent } from '../../../shared/status-badge/status-badge.component';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-my-deliveries',
@@ -29,14 +26,11 @@ import { forkJoin } from 'rxjs';
 })
 export class MyDeliveriesComponent implements OnInit {
   private deliveryService = inject(DeliveryService);
-  private courierService = inject(CourierService);
-  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
   deliveries = signal<Delivery[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  courierId = signal<number | null>(null);
 
   // Update Status Modal
   selectedDelivery = signal<Delivery | null>(null);
@@ -70,40 +64,14 @@ export class MyDeliveriesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMyCourierId();
+    this.loadMyDeliveries();
   }
 
-  loadMyCourierId(): void {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      this.error.set('Felhasználó nem található');
-      this.loading.set(false);
-      return;
-    }
-
-    this.courierService.getAll().subscribe({
-      next: (couriers) => {
-        const myCourier = couriers.find((c) => c.userId === userId);
-        if (myCourier) {
-          this.courierId.set(myCourier.id);
-          this.loadMyDeliveries(myCourier.id);
-        } else {
-          this.error.set('Nincs futár profil ehhez a felhasználóhoz');
-          this.loading.set(false);
-        }
-      },
-      error: (err) => {
-        this.error.set(err.message);
-        this.loading.set(false);
-      }
-    });
-  }
-
-  loadMyDeliveries(courierId: number): void {
+  loadMyDeliveries(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.deliveryService.getByCourierId(courierId).subscribe({
+    this.deliveryService.getMyDeliveries().subscribe({
       next: (deliveries) => {
         this.deliveries.set(deliveries);
         this.loading.set(false);
@@ -146,7 +114,7 @@ export class MyDeliveriesComponent implements OnInit {
         this.updateSuccess.set(true);
         setTimeout(() => {
           this.closeUpdateModal();
-          this.loadMyDeliveries(this.courierId()!);
+          this.loadMyDeliveries();
         }, 1500);
       },
       error: (err) => {

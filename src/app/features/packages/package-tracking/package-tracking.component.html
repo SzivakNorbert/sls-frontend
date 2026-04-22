@@ -27,63 +27,42 @@
                      </div>
                      }
 
-                     @if (package()) {
-                     <div class="card mt-3">
-                            <h3 class="mb-3">Csomag Információk</h3>
+                      @if (package()) {
+                      <div class="card mt-3">
+                             <h3 class="mb-3">Csomag Információk</h3>
 
-                            <div class="tracking-timeline">
-                                   <div class="timeline-item active">
-                                          <div class="timeline-marker">✓</div>
-                                          <div class="timeline-content">
-                                                 <strong>Létrehozva</strong>
-                                                 <p class="text-muted text-small">
-                                                        {{ package()!.createdAt | date:'yyyy-MM-dd HH:mm' }}
-                                                 </p>
-                                          </div>
-                                   </div>
+                             <div class="tracking-timeline">
+                                    @if (history().length === 0) {
+                                    <div class="alert alert-info">
+                                           Ehhez a csomaghoz még nincs elérhető státusztörténet.
+                                    </div>
+                                    } @else {
+                                    @for (entry of history(); track entry.id) {
+                                    <div class="timeline-item" [class.failed]="entry.newStatus === 'FAILED'">
+                                           <div class="timeline-marker">{{ entry.newStatus === 'FAILED' ? '✗' : '✓' }}
+                                           </div>
+                                           <div class="timeline-content">
+                                                  <strong>{{ entry.newStatus }}</strong>
+                                                  <p class="text-muted text-small">
+                                                         {{ entry.changedAt | date:'yyyy-MM-dd HH:mm' }}
+                                                  </p>
+                                                  @if (entry.changedByUserName) {
+                                                  <p class="text-muted text-small">
+                                                         Módosította: {{ entry.changedByUserName }}
+                                                  </p>
+                                                  }
+                                                  @if (entry.oldStatus) {
+                                                  <p class="text-muted text-small">
+                                                         Állapotváltás: {{ entry.oldStatus }} → {{ entry.newStatus }}
+                                                  </p>
+                                                  }
+                                           </div>
+                                    </div>
+                                    }
+                                    }
+                             </div>
 
-                                   <div class="timeline-item" [class.active]="package()!.status !== 'CREATED'">
-                                          <div class="timeline-marker">
-                                                 @if (package()!.status !== 'CREATED') { ✓ }
-                                          </div>
-                                          <div class="timeline-content">
-                                                 <strong>Hozzárendelve</strong>
-                                                 @if (package()!.courierName) {
-                                                 <p class="text-muted text-small">Futár: {{ package()!.courierName }}
-                                                 </p>
-                                                 }
-                                          </div>
-                                   </div>
-
-                                   <div class="timeline-item"
-                                          [class.active]="package()!.status === 'IN_TRANSIT' || package()!.status === 'DELIVERED'">
-                                          <div class="timeline-marker">
-                                                 @if (package()!.status === 'IN_TRANSIT' || package()!.status ===
-                                                 'DELIVERED') { ✓ }
-                                          </div>
-                                          <div class="timeline-content">
-                                                 <strong>Szállítás alatt</strong>
-                                          </div>
-                                   </div>
-
-                                   <div class="timeline-item" [class.active]="package()!.status === 'DELIVERED'"
-                                          [class.failed]="package()!.status === 'FAILED'">
-                                          <div class="timeline-marker">
-                                                 @if (package()!.status === 'DELIVERED') { ✓ }
-                                                 @if (package()!.status === 'FAILED') { ✗ }
-                                          </div>
-                                          <div class="timeline-content">
-                                                 <strong>
-                                                        @if (package()!.status === 'DELIVERED') { Kézbesítve }
-                                                        @if (package()!.status === 'FAILED') { Sikertelen }
-                                                        @if (package()!.status !== 'DELIVERED' && package()!.status !==
-                                                        'FAILED') { Kézbesítés }
-                                                 </strong>
-                                          </div>
-                                   </div>
-                            </div>
-
-                            <div class="mt-4">
+                             <div class="mt-4">
                                    <h4>Részletek</h4>
                                    <div class="detail-grid mt-2">
                                           <div class="detail-row">

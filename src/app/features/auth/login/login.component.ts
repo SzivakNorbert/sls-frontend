@@ -4,6 +4,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
+interface TestUserCredential {
+  label: string;
+  email: string;
+  password: string;
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -20,6 +26,11 @@ export class LoginComponent {
   loginForm: FormGroup;
   loading = signal(false);
   error = signal<string | null>(null);
+  testUsers: TestUserCredential[] = [
+    { label: 'Admin', email: 'admin@sls.com', password: 'admin123' },
+    { label: 'Futár', email: 'anna@sls.com', password: 'anna123' },
+    { label: 'Futár', email: 'john@sls.com', password: 'john123' }
+  ];
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -33,11 +44,22 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
+    this.login(this.loginForm.value);
+  }
 
+  loginAs(testUser: TestUserCredential): void {
+    this.loginForm.patchValue({
+      email: testUser.email,
+      password: testUser.password
+    });
+    this.login({ email: testUser.email, password: testUser.password });
+  }
+
+  private login(credentials: { email: string; password: string }): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login(credentials).subscribe({
       next: () => {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
         this.router.navigate([returnUrl]);

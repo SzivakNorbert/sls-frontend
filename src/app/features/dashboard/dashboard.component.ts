@@ -1,15 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { PackageService } from '../../core/services/package.service';
 import { CourierService } from '../../core/services/courier.service';
 import { DeliveryService } from '../../core/services/delivery.service';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-import { Package, PackageStatus } from '../../core/models/package.model';
-import { Courier } from '../../core/models/courier.model';
-import { Delivery, DeliveryStatus } from '../../core/models/delivery.model';
+import { PackageStatus } from '../../core/models/package.model';
+import { DeliveryStatus } from '../../core/models/delivery.model';
 import { forkJoin } from 'rxjs';
 
 interface DashboardStats {
@@ -37,7 +36,6 @@ export class DashboardComponent implements OnInit {
   private packageService = inject(PackageService);
   private courierService = inject(CourierService);
   private deliveryService = inject(DeliveryService);
-  private router = inject(Router);
 
   stats = signal<DashboardStats>({
     totalPackages: 0,
@@ -105,31 +103,28 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadCourierDashboard(): void {
-    const userId = this.authService.getUserId();
-
     forkJoin({
-      packages: this.packageService.getAll(),
-      couriers: this.courierService.getAll()
+      packages: this.packageService.getMyPackages(),
+      deliveries: this.deliveryService.getMyDeliveries()
     }).subscribe({
       next: (result) => {
         const packages = result.packages;
-        const couriers = result.couriers;
-        const myCourier = couriers.find((c) => c.userId === userId);
+        const deliveries = result.deliveries;
 
-        if (myCourier) {
-          this.stats.set({
-            totalPackages: packages.length,
-            createdPackages: packages.filter((p) => p.status === PackageStatus.CREATED).length,
-            inTransitPackages: packages.filter((p) => p.status === PackageStatus.IN_TRANSIT).length,
-            deliveredPackages: packages.filter((p) => p.status === PackageStatus.DELIVERED).length,
-            failedPackages: packages.filter((p) => p.status === PackageStatus.FAILED).length,
-            totalCouriers: couriers.length,
-            activeCouriers: couriers.filter((c) => c.isActive).length,
-            totalDeliveries: 0,
-            myActiveDeliveries: myCourier.activeDeliveries,
-            myTotalDelivered: myCourier.totalDelivered
-          });
-        }
+        this.stats.set({
+          totalPackages: packages.length,
+          createdPackages: packages.filter((p) => p.status === PackageStatus.CREATED).length,
+          inTransitPackages: packages.filter((p) => p.status === PackageStatus.IN_TRANSIT).length,
+          deliveredPackages: packages.filter((p) => p.status === PackageStatus.DELIVERED).length,
+          failedPackages: packages.filter((p) => p.status === PackageStatus.FAILED).length,
+          totalCouriers: 0,
+          activeCouriers: 0,
+          totalDeliveries: deliveries.length,
+          myActiveDeliveries: deliveries.filter(
+            (d) => d.status === DeliveryStatus.ASSIGNED || d.status === DeliveryStatus.IN_TRANSIT
+          ).length,
+          myTotalDelivered: deliveries.filter((d) => d.status === DeliveryStatus.DELIVERED).length
+        });
 
         this.loading.set(false);
       },
